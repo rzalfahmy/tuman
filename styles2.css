@@ -1,0 +1,100 @@
+body {
+  font-family: "Amiri", serif;
+  background-color: #fafafa;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  direction: rtl;
+}
+
+.book-container {
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 93.5vh;
+}
+
+.book-header {
+  background-color: #004d40;
+  color: white;
+  padding: 0px;
+  border-bottom: 0px solid #ccc;
+}
+
+.book-content {
+  padding: 0px;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+.details {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.details .name {
+  font-weight: bold;
+  font-size: 3.5rem;
+  margin-bottom: 1px;
+}
+
+.details .relation {
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+.details .info {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  unicode-bidi: plaintext;
+}
+
+@media (max-width: 600px) {
+  .book-container {
+    padding: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 84.5vh;
+  }
+  .book-header {
+    font-size: 1rem;
+    padding: 19px;
+  }
+
+  .details {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .details .name {
+    font-weight: bold;
+    font-size: 1.9rem;
+    margin-bottom: 1px;
+  }
+
+  .book-content {
+    padding: 30px;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #444;
+  }
+}

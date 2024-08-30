@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>إنا لله وإنا إليه راجعون</title>
+    <link rel="stylesheet" href="styles2.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  </head>
+  <body>
+    <div class="book-container">
+      <header class="book-header">
+        <h1>إنا لله وإنا إليه راجعون</h1>
+      </header>
+      <main class="book-content">
+        <div class="cover-content">
+          <div class="details">
+            <p class="name">Almh. Ika Solicha</p>
+            <p class="relation">Binti</p>
+            <p class="name">Alm. Kisuh</p>
+            <p class="info">
+              Lahir <br />
+              03-03-1972
+            </p>
+            <p class="info">
+              Wafat <br />
+              01-08-2024 19:45
+            </p>
+            <p class="info"><span id="usia"></span> tahun</p>
+            <p class="info"><span id="jumlah-hari"></span> hari sejak wafat</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function parseTanggal(tanggalStr) {
+        const parts = tanggalStr.split("-");
+        return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+      }
+
+      function hitungHari() {
+        const tanggalMeninggalStr = "01-08-2024";
+        const diffTime = new Date() - parseTanggal(tanggalMeninggalStr);
+        document.getElementById("jumlah-hari").textContent = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      }
+
+      function hitungUsia() {
+        const tanggalLahirStr = "03-03-1972";
+        const tanggalMeninggalStr = "01-08-2024";
+        const usia = parseTanggal(tanggalMeninggalStr).getFullYear() - parseTanggal(tanggalLahirStr).getFullYear();
+        document.getElementById("usia").textContent = usia;
+      }
+
+      function goToDashboard() {
+        window.location.href = "dashboard.html";
+      }
+
+      window.onload = function () {
+        hitungHari();
+        hitungUsia();
+
+        // Initialize Hammer.js for swipe right on mobile
+        var body = document.body;
+        var hammertime = new Hammer(body);
+        hammertime.on("swiperight", function (ev) {
+          goToDashboard();
+        });
+
+        // Mouse swipe detection for desktop
+        let startX = 0;
+        let isSwiping = false;
+
+        document.addEventListener("mousedown", function (event) {
+          startX = event.clientX;
+          isSwiping = true;
+        });
+
+        document.addEventListener("mousemove", function (event) {
+          if (isSwiping) {
+            let deltaX = event.clientX - startX;
+            if (deltaX > 100) {
+              // Adjust threshold for swipe detection
+              goToDashboard();
+              isSwiping = false;
+            }
+          }
+        });
+
+        document.addEventListener("mouseup", function () {
+          isSwiping = false;
+        });
+      };
+
+      document.addEventListener("keydown", function (event) {
+        // Cegah akses Ctrl+U
+        if (event.ctrlKey && event.key === "u") {
+          event.preventDefault();
+        }
+
+        // Cegah akses Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+S, dan F12
+        if ((event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "J") || (event.ctrlKey && event.key === "s") || event.key === "F12") {
+          event.preventDefault();
+        }
+      });
+
+      // Cegah klik kanan
+      document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>

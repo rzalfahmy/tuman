@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Amalan</title>
+    <link rel="stylesheet" href="styles3.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <h1>ساتو جنغامان</h1>
+      </header>
+      <main class="dashboard-content">
+        <input type="text" id="search-box" placeholder="Search..." onkeyup="searchAmalan()" style="direction: ltr" />
+        <div class="amalan-list" id="amalan-list">
+          <button class="amalan-item" onclick="navigateTo('tuman1.html')" data-indonesian="waktu sholat">
+            <h2>وقت الصلاة</h2>
+          </button>
+          <button class="amalan-item" onclick="navigateTo('tuman2.html')" data-indonesian="yasin">
+            <h2>سورة يس</h2>
+          </button>
+          <!-- Tambahkan amalan lain di sini -->
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function navigateTo(url) {
+        window.location.href = url;
+      }
+
+      function searchAmalan() {
+        const searchBox = document.getElementById("search-box");
+        const filter = searchBox.value.toLowerCase();
+        const amalanList = document.getElementById("amalan-list");
+        const buttons = amalanList.getElementsByClassName("amalan-item");
+
+        for (let i = 0; i < buttons.length; i++) {
+          const button = buttons[i];
+          const indonesian = button.getAttribute("data-indonesian").toLowerCase();
+
+          if (indonesian.includes(filter)) {
+            button.style.display = ""; // Show the button
+          } else {
+            button.style.display = "none"; // Hide the button
+          }
+        }
+      }
+
+      window.onload = function () {
+        var body = document.body;
+        var hammertime = new Hammer(body);
+
+        hammertime.on("swiperight", function (ev) {
+          window.location.href = "tuman1.html";
+        });
+
+        hammertime.on("swipeleft", function (ev) {
+          window.location.href = "index.html";
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowLeft") {
+            window.location.href = "index.html";
+          } else if (event.key === "ArrowRight") {
+            window.location.href = "tuman1.html";
+          }
+        });
+      };
+
+      document.addEventListener("keydown", function (event) {
+        // Cegah akses Ctrl+U
+        if (event.ctrlKey && event.key === "u") {
+          event.preventDefault();
+        }
+
+        // Cegah akses Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+S, dan F12
+        if ((event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "J") || (event.ctrlKey && event.key === "s") || event.key === "F12") {
+          event.preventDefault();
+        }
+      });
+
+      // Cegah klik kanan
+      document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+      });
+
+      document.addEventListener("keydown", function (event) {
+        // Cegah akses Ctrl+U
+        if (event.ctrlKey && event.key === "u") {
+          event.preventDefault();
+        }
+
+        // Cegah akses Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+S, dan F12
+        if ((event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "J") || (event.ctrlKey && event.key === "s") || event.key === "F12") {
+          event.preventDefault();
+        }
+      });
+
+      // Cegah klik kanan
+      document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>

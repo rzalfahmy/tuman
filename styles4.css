@@ -1,0 +1,149 @@
+/* styles4.css */
+
+body {
+  font-family: "Amiri", serif;
+  background-color: #fafafa;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  direction: rtl;
+}
+
+.dashboard-container {
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 93.5vh;
+}
+
+.dashboard-header {
+  background-color: #004d40;
+  color: white;
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+}
+
+.dashboard-header .navigate-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.dashboard-content {
+  padding: 20px;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #444;
+  display: flex;
+  justify-content: center; /* Center the table horizontally */
+}
+
+.jadwal-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 600px; /* Restrict table width */
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.jadwal-table th,
+.jadwal-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.jadwal-table th {
+  background-color: #004d40;
+  color: #fff;
+}
+
+.jadwal-table td {
+  background-color: #f9f9f9;
+}
+
+.jadwal-table tr:nth-child(even) td {
+  background-color: #f1f1f1;
+}
+
+.amalan-list {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.amalan-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.amalan-item h2 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: #004d40;
+}
+
+.button-container {
+  padding: 10px;
+  text-align: center;
+}
+
+.button-container button {
+  background-color: #004d40;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.button-container button:hover {
+  background-color: #00796b;
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 10px;
+    max-width: 100%;
+    height: 84.5vh;
+  }
+
+  .dashboard-header {
+    font-size: 1rem;
+    padding: 85px;
+  }
+
+  .dashboard-content {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .jadwal-table {
+    width: 100%;
+  }
+
+  .amalan-item {
+    padding: 10px;
+  }
+
+  .button-container button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>وقت الصلاة</title>
+    <link rel="stylesheet" href="styles4.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <h1>وقت الصلاة</h1>
+      </header>
+      <main class="dashboard-content">
+        <table id="jadwalSholat" class="jadwal-table">
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>Pukul</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Jadwal sholat akan diisi berdasarkan lokasi -->
+          </tbody>
+        </table>
+      </main>
+    </div>
+
+    <script>
+      function fetchJadwalSholat(latitude, longitude) {
+        const method = 1; // Gunakan metode Karachi
+        const url = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=${method}`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.code === 200) {
+              const jadwal = data.data.timings;
+              const location = data.data.meta.timezone;
+              displayJadwalSholat(jadwal, location);
+            } else {
+              console.error("Data tidak ditemukan untuk lokasi ini.");
+            }
+          })
+          .catch((error) => console.error("Error fetching the jadwal sholat:", error));
+      }
+
+      function displayJadwalSholat(jadwal, location) {
+        const jadwalSholat = document.getElementById("jadwalSholat").getElementsByTagName("tbody")[0];
+
+        function convertToDateTime(timeString) {
+          const [hours, minutes] = timeString.split(":").map(Number);
+          const now = new Date();
+          now.setHours(hours, minutes, 0, 0);
+          return now;
+        }
+
+        function addHours(date, hours) {
+          const result = new Date(date);
+          result.setHours(result.getHours() + hours);
+          return result;
+        }
+
+        const subuhTime = convertToDateTime(jadwal.Fajr);
+        const duhaTime = addHours(subuhTime, 2);
+
+        jadwalSholat.innerHTML = `
+          <tr>
+            <td>Imsak</td>
+            <td>${jadwal.Imsak || "Data tidak tersedia"}</td>
+          </tr>
+          <tr>
+            <td>Subuh</td>
+            <td>${jadwal.Fajr}</td>
+          </tr>
+          <tr>
+            <td>Duha</td>
+            <td>${duhaTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</td>
+          </tr>
+          <tr>
+            <td>Dzuhur</td>
+            <td>${jadwal.Dhuhr}</td>
+          </tr>
+          <tr>
+            <td>Ashar</td>
+            <td>${jadwal.Asr}</td>
+          </tr>
+          <tr>
+            <td>Maghrib</td>
+            <td>${jadwal.Maghrib}</td>
+          </tr>
+          <tr>
+            <td>Isya</td>
+            <td>${jadwal.Isha}</td>
+          </tr>
+        `;
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+          alert("Geolocation tidak didukung oleh browser ini.");
+        }
+      }
+
+      function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        fetchJadwalSholat(latitude, longitude);
+      }
+
+      function showError(error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert("Pengguna menolak permintaan geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Informasi lokasi tidak tersedia.");
+            break;
+          case error.TIMEOUT:
+            alert("Permintaan untuk mendapatkan lokasi pengguna melebihi batas waktu.");
+            break;
+          case error.UNKNOWN_ERROR:
+            alert("Terjadi kesalahan yang tidak diketahui.");
+            break;
+        }
+      }
+
+      window.onload = function () {
+        var body = document.body;
+        var hammertime = new Hammer(body);
+
+        hammertime.on("swipeleft", function () {
+          window.location.href = "dashboard.html"; // Ganti dengan URL halaman berikutnya
+        });
+
+        hammertime.on("swiperight", function () {
+          window.location.href = "https://www.wedingin.com/";
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowLeft") {
+            window.location.href = "https://www.wedingin.com/";
+          } else if (event.key === "ArrowRight") {
+            window.location.href = "dashboard.html"; // Ganti dengan URL halaman berikutnya
+          }
+        });
+
+        getLocation(); // Automatically fetch the prayer schedule based on user's location
+      };
+
+      document.addEventListener("keydown", function (event) {
+        // Cegah akses Ctrl+U
+        if (event.ctrlKey && event.key === "u") {
+          event.preventDefault();
+        }
+
+        // Cegah akses Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+S, dan F12
+        if ((event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.shiftKey && event.key === "J") || (event.ctrlKey && event.key === "s") || event.key === "F12") {
+          event.preventDefault();
+        }
+      });
+
+      // Cegah klik kanan
+      document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>
