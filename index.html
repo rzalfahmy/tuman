@@ -34,21 +34,34 @@
     </div>
 
     <script>
-      function parseTanggal(tanggalStr) {
-        const parts = tanggalStr.split("-");
-        return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+      function parseTanggalWaktu(tanggalStr) {
+        const [tanggal, waktu] = tanggalStr.split(" ");
+        const [day, month, year] = tanggal.split("-");
+        const [hour, minute] = waktu ? waktu.split(":") : [0, 0];
+        return new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), parseInt(hour, 10), parseInt(minute, 10));
       }
 
       function hitungHari() {
-        const tanggalMeninggalStr = "01-08-2024";
-        const diffTime = new Date() - parseTanggal(tanggalMeninggalStr);
-        document.getElementById("jumlah-hari").textContent = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const tanggalMeninggalStr = "01-08-2024 19:45";
+        const waktuMeninggal = parseTanggalWaktu(tanggalMeninggalStr);
+        const sekarang = new Date();
+        const diffTime = sekarang - waktuMeninggal;
+
+        // Hitung jumlah hari secara keseluruhan (termasuk jam dan menit)
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+        // Jika saat ini sudah melewati waktu yang ditentukan, tambah 1 hari
+        if (diffDays >= 1) {
+          document.getElementById("jumlah-hari").textContent = Math.ceil(diffDays);
+        } else {
+          document.getElementById("jumlah-hari").textContent = Math.floor(diffDays);
+        }
       }
 
       function hitungUsia() {
         const tanggalLahirStr = "03-03-1972";
-        const tanggalMeninggalStr = "01-08-2024";
-        const usia = parseTanggal(tanggalMeninggalStr).getFullYear() - parseTanggal(tanggalLahirStr).getFullYear();
+        const tanggalMeninggalStr = "01-08-2024 19:45";
+        const usia = parseTanggalWaktu(tanggalMeninggalStr).getFullYear() - parseTanggalWaktu(tanggalLahirStr).getFullYear();
         document.getElementById("usia").textContent = usia;
       }
 
