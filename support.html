@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="eng">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support Us</title>
+    <link rel="stylesheet" href="styles6.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  </head>
+  <body dir="rtl">
+    <div class="book-container">
+      <header class="book-header">
+        <h1>Support Us</h1>
+      </header>
+      <main class="book-content hurufisi">
+        <section id="page-1" class="page active">
+          <p class="text-center">
+            Kami sangat menghargai dukungan Anda<br />
+            Anda dapat berkontribusi pada upaya kami melalui metode berikut
+          </p>
+
+          <h3>Transfer Bank</h3>
+
+          <p>
+            Nomor Rekening: <strong id="rekening-number-1">6240939752</strong><br />
+            Nama Bank: <strong>Bank BCA</strong><br />
+            Nama Pemilik Rekening: <strong>Rizal Fahmi</strong>
+          </p>
+          <button onclick="copyRekening('rekening-number-1')">Salin Nomor Rekening BCA</button>
+          <p id="copy-message-1" style="display: none; color: green">Nomor rekening BCA berhasil disalin</p>
+
+          <p>
+            Nomor Rekening: <strong id="rekening-number-3">37901500215542</strong><br />
+            Nama Bank: <strong>Bank BTN</strong><br />
+            Nama Pemilik Rekening: <strong>Rizal Fahmi</strong>
+          </p>
+          <button onclick="copyRekening('rekening-number-3')">Salin Nomor Rekening BTN</button>
+          <p id="copy-message-3" style="display: none; color: green">Nomor rekening BTN berhasil disalin</p>
+
+          <p>
+            Nomor Rekening: <strong id="rekening-number-2">1640004094464</strong><br />
+            Nama Bank: <strong>Bank Mandiri</strong><br />
+            Nama Pemilik Rekening: <strong>Rizal Fahmi</strong>
+          </p>
+          <button onclick="copyRekening('rekening-number-2')">Salin Nomor Rekening Mandiri</button>
+          <p id="copy-message-2" style="display: none; color: green">Nomor rekening Mandiri berhasil disalin</p>
+
+          <p>Terima kasih atas dukungan Anda yang sangat berarti</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      window.onload = function () {
+        var body = document.body;
+        var hammertime = new Hammer(body);
+
+        hammertime.on("swiperight", function (ev) {
+          window.location.href = "#";
+        });
+
+        hammertime.on("swipeleft", function (ev) {
+          window.location.href = "dashboard.html";
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowLeft") {
+            window.location.href = "dashboard.html";
+          } else if (event.key === "ArrowRight") {
+            window.location.href = "#";
+          }
+        });
+      };
+
+      // Function to copy rekening number using input field
+      function copyRekening(rekeningId) {
+        var rekeningNumber = document.getElementById(rekeningId).innerText;
+
+        // Create a temporary input field to hold the rekening number
+        var tempInput = document.createElement("input");
+        tempInput.value = rekeningNumber;
+        document.body.appendChild(tempInput);
+
+        // Select and copy the text
+        tempInput.select();
+        document.execCommand("copy");
+
+        // Remove the temporary input field
+        document.body.removeChild(tempInput);
+
+        // Show success message
+        var message = document.getElementById("copy-message-" + rekeningId.split("-")[2]);
+        message.style.display = "block"; // Show success message
+        setTimeout(function () {
+          message.style.display = "none"; // Hide message after 3 seconds
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
