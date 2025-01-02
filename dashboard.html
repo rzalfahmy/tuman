@@ -21,6 +21,9 @@
           <button class="amalan-item" onclick="navigateTo('tuman2.html')" data-indonesian="yasin">
             <h2>سورة يس</h2>
           </button>
+          <button class="amalan-item" onclick="navigateTo('tuman3.html')" data-indonesian="dzikir setelah sholat">
+            <h2>أذكار بعد الصلاة</h2>
+          </button>
           <!-- Tambahkan amalan lain di sini -->
         </div>
       </main>
@@ -54,7 +57,7 @@
         var hammertime = new Hammer(body);
 
         hammertime.on("swiperight", function (ev) {
-          window.location.href = "tuman1.html";
+          window.location.href = "#";
         });
 
         hammertime.on("swipeleft", function (ev) {
@@ -65,7 +68,7 @@
           if (event.key === "ArrowLeft") {
             window.location.href = "index.html";
           } else if (event.key === "ArrowRight") {
-            window.location.href = "tuman1.html";
+            window.location.href = "#";
           }
         });
       };
