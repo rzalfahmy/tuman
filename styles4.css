@@ -119,9 +119,19 @@ body {
 
 @media (max-width: 600px) {
   .dashboard-container {
-    padding: 10px;
     max-width: 100%;
     height: 84.5vh;
+    padding: 0px;
+    max-width: 800px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 87vh;
   }
 
   .dashboard-header {
