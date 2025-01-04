@@ -94,6 +94,68 @@ body {
   text-align: center;
 }
 
+hr {
+  border: 0;
+  border-top: 2px solid #004d40; /* Warna garis */
+  margin: 20px 0; /* Jarak atas dan bawah */
+}
+
+/* Gaya untuk elemen tasbih */
+.count-display {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #004d40;
+  background-color: #e0f2f1;
+  border: 2px solid #004d40;
+  border-radius: 5px;
+  padding: 1px 10px;
+  display: inline-block;
+  margin: 5px;
+  text-align: center;
+  width: 60px; /* Lebar tetap untuk konsistensi */
+}
+
+.btn {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  background-color: #004d40;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 37px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #00796b;
+}
+
+.btn-add {
+  background-color: #004d40; /* Hijau lebih gelap */
+}
+
+.btn-add:hover {
+  background-color: #00725f; /* Hijau untuk tambah */
+}
+
+.btn-subtract {
+  background-color: #004d40; /* Hijau lebih gelap */
+}
+
+.btn-subtract:hover {
+  background-color: #00725f; /* Hijau untuk tambah */
+}
+
+.btn-reset {
+  background-color: #004d40; /* Hijau lebih gelap */
+}
+
+.btn-reset:hover {
+  background-color: #00725f; /* Hijau untuk tambah */
+}
+
 /* Responsif */
 @media (max-width: 600px) {
   .book-container {
@@ -119,6 +181,16 @@ body {
 
   .hurufisi {
     font-size: 150%;
+  }
+
+  .count-display {
+    font-size: 1.5rem;
+    width: 50px;
+  }
+
+  .btn {
+    font-size: 1.2rem;
+    padding: 10px 30px;
   }
 
   hr {
