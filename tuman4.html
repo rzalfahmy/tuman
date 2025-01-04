@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>التسبيح ديجيتال</title>
+    <link rel="stylesheet" href="styles7.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  </head>
+  <body dir="rtl">
+    <div class="book-container">
+      <header class="book-header">
+        <h1>التسبيح ديجيتال</h1>
+      </header>
+      <main class="book-content hurufisi">
+        <section id="page-1" class="page active">
+          <span class="text-center">
+            <span id="count-display-1" class="count-display">٠</span><br />
+            <button class="btn btn-add" onclick="increment('count-display-1')">+</button>
+            <button class="btn btn-subtract" onclick="decrement('count-display-1')">-</button>
+            <button class="btn btn-reset" onclick="reset('count-display-1')">0</button>
+          </span>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      window.onload = function () {
+        var body = document.body;
+        var hammertime = new Hammer(body);
+
+        hammertime.on("swiperight", function (ev) {
+          window.location.href = "#";
+        });
+
+        hammertime.on("swipeleft", function (ev) {
+          window.location.href = "dashboard.html";
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowLeft") {
+            window.location.href = "dashboard.html";
+          } else if (event.key === "ArrowRight") {
+            window.location.href = "#";
+          }
+        });
+      };
+
+      // Fungsi untuk mengonversi angka ke angka Arab
+      function toArabicNumber(num) {
+        const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+        return num
+          .toString()
+          .split("")
+          .map((digit) => arabicDigits[parseInt(digit, 10)])
+          .join("");
+      }
+
+      // Fungsi untuk menambah angka
+      function increment(id) {
+        const display = document.getElementById(id);
+        let count = parseInt(
+          display.textContent.replace(/[٠-٩]/g, (match) => {
+            return "0123456789"[["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"].indexOf(match)];
+          }),
+          10
+        ); // Ambil angka dalam format desimal
+
+        count++; // Tambah 1
+        display.textContent = toArabicNumber(count); // Tampilkan dalam angka Arab
+      }
+
+      // Fungsi untuk mengurangi angka
+      function decrement(id) {
+        const display = document.getElementById(id);
+        let count = parseInt(
+          display.textContent.replace(/[٠-٩]/g, (match) => {
+            return "0123456789"[["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"].indexOf(match)];
+          }),
+          10
+        ); // Ambil angka dalam format desimal
+
+        if (count > 0) {
+          count--; // Kurangi 1
+          display.textContent = toArabicNumber(count); // Tampilkan dalam angka Arab
+        }
+      }
+
+      // Fungsi untuk mereset angka
+      function reset(id) {
+        const display = document.getElementById(id);
+        display.textContent = toArabicNumber(0); // Reset ke angka Arab 0
+      }
+    </script>
+  </body>
+</html>
