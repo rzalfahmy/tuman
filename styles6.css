@@ -94,6 +94,21 @@ body {
   text-align: center;
 }
 
+.center-table {
+  margin: 0 auto; /* Pusatkan tabel di tengah */
+  border-collapse: collapse; /* Hilangkan jarak antar sel */
+}
+
+.center-table td {
+  text-align: left; /* Teks tetap rata kiri */
+  padding: 8px 15px; /* Tambahkan jarak di dalam sel */
+}
+
+.center-table td:nth-child(2) {
+  text-align: center; /* Kolom untuk titik dua rata tengah */
+  width: 10px; /* Lebar tetap untuk titik dua */
+}
+
 /* Responsif */
 @media (max-width: 600px) {
   .book-container {
