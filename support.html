@@ -3,49 +3,90 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Support Us</title>
+    <title>Support & Contact Us</title>
     <link rel="stylesheet" href="styles6.css" />
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
   </head>
   <body dir="rtl">
     <div class="book-container">
       <header class="book-header">
-        <h1>Support Us</h1>
+        <h1>Support & Contact Us</h1>
       </header>
       <main class="book-content hurufisi">
         <section id="page-1" class="page active">
-          <p class="text-center">
+          <span class="text-center">
             Kami sangat menghargai dukungan Anda<br />
-            Anda dapat berkontribusi pada upaya kami melalui metode berikut
-          </p>
+            Anda dapat berkontribusi pada upaya kami
+          </span>
 
-          <h3>Transfer Bank</h3>
+          <table class="center-table">
+            <tr>
+              <td id="rekening-number-1">6240939752</td>
+              <td>:</td>
+              <td>No.Rekening</td>
+            </tr>
+            <tr>
+              <td>Bank BCA</td>
+              <td>:</td>
+              <td>Bank</td>
+            </tr>
+            <tr>
+              <td>Rizal Fahmi</td>
+              <td>:</td>
+              <td>Atas Nama</td>
+            </tr>
+          </table>
 
-          <p>
-            Nomor Rekening: <strong id="rekening-number-1">6240939752</strong><br />
-            Nama Bank: <strong>Bank BCA</strong><br />
-            Nama Pemilik Rekening: <strong>Rizal Fahmi</strong>
-          </p>
           <button onclick="copyRekening('rekening-number-1')">Salin Nomor Rekening BCA</button>
           <p id="copy-message-1" style="display: none; color: green">Nomor rekening BCA berhasil disalin</p>
 
-          <p>
-            Nomor Rekening: <strong id="rekening-number-3">37901500215542</strong><br />
-            Nama Bank: <strong>Bank BTN</strong><br />
-            Nama Pemilik Rekening: <strong>Rizal Fahmi</strong>
-          </p>
+          <table class="center-table">
+            <tr>
+              <td id="rekening-number-3">37901500215542</td>
+              <td>:</td>
+              <td>No.Rekening</td>
+            </tr>
+            <tr>
+              <td>Bank BTN</td>
+              <td>:</td>
+              <td>Bank</td>
+            </tr>
+            <tr>
+              <td>Rizal Fahmi</td>
+              <td>:</td>
+              <td>Atas Nama</td>
+            </tr>
+          </table>
+
           <button onclick="copyRekening('rekening-number-3')">Salin Nomor Rekening BTN</button>
           <p id="copy-message-3" style="display: none; color: green">Nomor rekening BTN berhasil disalin</p>
 
-          <p>
-            Nomor Rekening: <strong id="rekening-number-2">1640004094464</strong><br />
-            Nama Bank: <strong>Bank Mandiri</strong><br />
-            Nama Pemilik Rekening: <strong>Rizal Fahmi</strong>
-          </p>
+          <table class="center-table">
+            <tr>
+              <td id="rekening-number-2">1640004094464</td>
+              <td>:</td>
+              <td>No.Rekening</td>
+            </tr>
+            <tr>
+              <td>Bank Mandiri</td>
+              <td>:</td>
+              <td>Bank</td>
+            </tr>
+            <tr>
+              <td>Rizal Fahmi</td>
+              <td>:</td>
+              <td>Atas Nama</td>
+            </tr>
+          </table>
+
           <button onclick="copyRekening('rekening-number-2')">Salin Nomor Rekening Mandiri</button>
           <p id="copy-message-2" style="display: none; color: green">Nomor rekening Mandiri berhasil disalin</p>
 
           <p>Terima kasih atas dukungan Anda yang sangat berarti</p>
+          <p>
+            <a href="mailto:rizalfahmi1511@gmail.com" class="contact-link">Email</a> | <a href="https://wa.me/6281389338181" target="_blank" class="contact-link">WhatsApp</a> |
+            <a href="https://rzalfahmy.github.io/" class="contact-link">Rizal Fahmi</a> | <a href="https://www.wedingin.com/" class="contact-link">Wedingin</a>
+          </p>
         </section>
       </main>
     </div>
