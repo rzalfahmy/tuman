@@ -59,6 +59,39 @@ body {
   unicode-bidi: plaintext;
 }
 
+.slide-notice {
+  font-size: 1rem;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 6px 16px;
+  border-radius: 25px;
+  margin: 10px auto 5px;
+  display: none;
+  animation: slide-left-right 3s linear infinite;
+  white-space: nowrap;
+  width: fit-content;
+  direction: rtl;
+  font-family: "Amiri", serif;
+}
+
+@keyframes slide-left-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+
 @media (max-width: 600px) {
   .book-container {
     padding: 0px;
