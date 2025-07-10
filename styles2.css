@@ -60,18 +60,26 @@ body {
 }
 
 .slide-notice {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 2em;
+  margin: 10px auto 5px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 25px;
+  direction: rtl;
+  display: none;
+  text-align: center;
+}
+
+.notice-text {
+  display: inline-block;
+  white-space: nowrap;
   font-size: 1rem;
   color: #fff;
-  background-color: rgba(255, 255, 255, 0.15);
-  padding: 6px 16px;
-  border-radius: 25px;
-  margin: 10px auto 5px;
-  display: none;
-  animation: slide-left-right 3s linear infinite;
-  white-space: nowrap;
-  width: fit-content;
-  direction: rtl;
   font-family: "Amiri", serif;
+  animation: slide-right-left 4s linear;
+  padding-left: 100%;
 }
 
 @keyframes slide-right-left {
@@ -131,9 +139,21 @@ body {
     color: #444;
   }
 
-  .slide-notice {
-    font-size: 0.85rem;
-    padding: 4px 12px;
-    margin-top: 8px;
-  }
+.slide-notice {
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  margin-top: 8px;
+  width: 100%;
+  height: 2em;
+  overflow: hidden;
+  text-align: center;
+  direction: rtl;
+}
+.notice-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: slide-right-left 4s linear;
+}
+
 }
