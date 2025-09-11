@@ -6,6 +6,14 @@
     <title>وقت الصلاة</title>
     <link rel="stylesheet" href="styles4.css" />
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <style>
+      /* Tambahkan gaya untuk highlight aktif */
+      .jadwal-table tr.active {
+        background-color: #ffe08a;
+        font-weight: bold;
+        transition: background 0.3s ease;
+      }
+    </style>
   </head>
   <body>
     <div class="dashboard-container">
@@ -105,14 +113,44 @@
         const duhaTime = addHours(subuhTime, 2);
 
         tbody.innerHTML = `
-          <tr><td>Imsak</td><td>${jadwal.Imsak || "-"}</td></tr>
-          <tr><td>Subuh</td><td>${jadwal.Fajr}</td></tr>
-          <tr><td>Duha</td><td>${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</td></tr>
-          <tr><td>Dzuhur</td><td>${jadwal.Dhuhr}</td></tr>
-          <tr><td>Ashar</td><td>${jadwal.Asr}</td></tr>
-          <tr><td>Maghrib</td><td>${jadwal.Maghrib}</td></tr>
-          <tr><td>Isya</td><td>${jadwal.Isha}</td></tr>
+          <tr data-time="${jadwal.Imsak || ""}"><td>Imsak</td><td>${jadwal.Imsak || "-"}</td></tr>
+          <tr data-time="${jadwal.Fajr}"><td>Subuh</td><td>${jadwal.Fajr}</td></tr>
+          <tr data-time="${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}"><td>Duha</td><td>${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</td></tr>
+          <tr data-time="${jadwal.Dhuhr}"><td>Dzuhur</td><td>${jadwal.Dhuhr}</td></tr>
+          <tr data-time="${jadwal.Asr}"><td>Ashar</td><td>${jadwal.Asr}</td></tr>
+          <tr data-time="${jadwal.Maghrib}"><td>Maghrib</td><td>${jadwal.Maghrib}</td></tr>
+          <tr data-time="${jadwal.Isha}"><td>Isya</td><td>${jadwal.Isha}</td></tr>
         `;
+
+        highlightNextPrayer();
+      }
+
+      // Penanda sholat berikutnya
+      function highlightNextPrayer() {
+        const rows = document.querySelectorAll("#jadwalSholat tbody tr");
+        const now = new Date();
+
+        let nextRow = null;
+        let nextTime = null;
+
+        rows.forEach((row) => {
+          const timeStr = row.getAttribute("data-time");
+          if (!timeStr || timeStr === "-") return;
+
+          const [h, m] = timeStr.split(":").map(Number);
+          if (isNaN(h) || isNaN(m)) return;
+
+          const t = new Date();
+          t.setHours(h, m, 0, 0);
+
+          if (t > now && (!nextTime || t < nextTime)) {
+            nextTime = t;
+            nextRow = row;
+          }
+        });
+
+        rows.forEach((row) => row.classList.remove("active"));
+        if (nextRow) nextRow.classList.add("active");
       }
 
       function getLocation() {
@@ -156,6 +194,9 @@
 
         // 2. Update jika user izinkan lokasi
         getLocation();
+
+        // 3. Cek ulang setiap menit supaya highlight selalu update
+        setInterval(highlightNextPrayer, 60000);
       };
 
       // Cegah akses source
