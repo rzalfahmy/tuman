@@ -7,24 +7,20 @@
     <link rel="stylesheet" href="styles4.css" />
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <style>
+      /* Highlight row aktif */
       .jadwal-table tr.active {
         background-color: #ffe08a;
         font-weight: bold;
         transition: background 0.3s ease;
       }
+
+      /* Countdown elegan */
       #countdown {
-        margin: 15px 0;
-        font-size: 1.5em;
         text-align: center;
-        font-weight: bold;
-        color: #2c3e50;
-      }
-      #countdown span {
-        display: block;
-        font-size: 0.8em;
-        font-weight: normal;
-        margin-bottom: 5px;
-        color: #666;
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: #333;
       }
     </style>
   </head>
@@ -34,10 +30,9 @@
         <h1>وقت الصلاة</h1>
       </header>
       <main class="dashboard-content">
-        <div id="countdown">
-          <span>Sholat berikutnya</span>
-          Memuat...
-        </div>
+        <!-- Countdown di atas tabel -->
+        <div id="countdown">Memuat...</div>
+
         <table id="jadwalSholat" class="jadwal-table">
           <thead>
             <tr>
@@ -54,6 +49,8 @@
 
     <script>
       const method = 1; // Metode Karachi
+      let nextPrayerName = "";
+      let nextPrayerTime = null;
 
       // Fungsi request dengan timeout
       function fetchWithTimeout(resource, options = {}) {
@@ -130,19 +127,19 @@
         const duhaTime = addHours(subuhTime, 2);
 
         tbody.innerHTML = `
-          <tr data-time="${jadwal.Imsak || ""}"><td>Imsak</td><td>${jadwal.Imsak || "-"}</td></tr>
-          <tr data-time="${jadwal.Fajr}"><td>Subuh</td><td>${jadwal.Fajr}</td></tr>
-          <tr data-time="${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}"><td>Duha</td><td>${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</td></tr>
-          <tr data-time="${jadwal.Dhuhr}"><td>Dzuhur</td><td>${jadwal.Dhuhr}</td></tr>
-          <tr data-time="${jadwal.Asr}"><td>Ashar</td><td>${jadwal.Asr}</td></tr>
-          <tr data-time="${jadwal.Maghrib}"><td>Maghrib</td><td>${jadwal.Maghrib}</td></tr>
-          <tr data-time="${jadwal.Isha}"><td>Isya</td><td>${jadwal.Isha}</td></tr>
+          <tr data-name="Imsak" data-time="${jadwal.Imsak || ""}"><td>Imsak</td><td>${jadwal.Imsak || "-"}</td></tr>
+          <tr data-name="Subuh" data-time="${jadwal.Fajr}"><td>Subuh</td><td>${jadwal.Fajr}</td></tr>
+          <tr data-name="Duha" data-time="${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}"><td>Duha</td><td>${duhaTime.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</td></tr>
+          <tr data-name="Dzuhur" data-time="${jadwal.Dhuhr}"><td>Dzuhur</td><td>${jadwal.Dhuhr}</td></tr>
+          <tr data-name="Ashar" data-time="${jadwal.Asr}"><td>Ashar</td><td>${jadwal.Asr}</td></tr>
+          <tr data-name="Maghrib" data-time="${jadwal.Maghrib}"><td>Maghrib</td><td>${jadwal.Maghrib}</td></tr>
+          <tr data-name="Isya" data-time="${jadwal.Isha}"><td>Isya</td><td>${jadwal.Isha}</td></tr>
         `;
 
         highlightNextPrayer();
       }
 
-      // Highlight + countdown
+      // Penanda sholat berikutnya + countdown
       function highlightNextPrayer() {
         const rows = document.querySelectorAll("#jadwalSholat tbody tr");
         const now = new Date();
@@ -152,6 +149,7 @@
 
         rows.forEach((row) => {
           const timeStr = row.getAttribute("data-time");
+          const name = row.getAttribute("data-name");
           if (!timeStr || timeStr === "-") return;
 
           const [h, m] = timeStr.split(":").map(Number);
@@ -163,59 +161,55 @@
           if (t > now && (!nextTime || t < nextTime)) {
             nextTime = t;
             nextRow = row;
+            nextPrayerName = name;
           }
         });
 
         rows.forEach((row) => row.classList.remove("active"));
 
-        if (!nextRow) {
-          // Semua sholat hari ini sudah lewat → highlight Subuh besok
-          nextRow = Array.from(rows).find((r) => r.textContent.includes("Subuh"));
-          if (nextRow) {
-            const [h, m] = nextRow.getAttribute("data-time").split(":").map(Number);
-            nextTime = new Date();
-            nextTime.setDate(nextTime.getDate() + 1);
-            nextTime.setHours(h, m, 0, 0);
-          }
-        }
-
         if (nextRow) {
           nextRow.classList.add("active");
-          updateCountdown(nextRow.cells[0].textContent, nextTime);
+          nextPrayerTime = nextTime;
+        } else {
+          // Semua lewat → highlight Subuh besok
+          const subuhRow = Array.from(rows).find((r) =>
+            r.getAttribute("data-name") === "Subuh"
+          );
+          if (subuhRow) subuhRow.classList.add("active");
+
+          const [h, m] = subuhRow.getAttribute("data-time").split(":").map(Number);
+          nextPrayerName = "Subuh";
+          nextPrayerTime = new Date(now);
+          nextPrayerTime.setDate(now.getDate() + 1);
+          nextPrayerTime.setHours(h, m, 0, 0);
         }
+
+        updateCountdown();
       }
 
-      function updateCountdown(prayerName, nextTime) {
+      // Update countdown tampilan
+      function updateCountdown() {
         const countdownEl = document.getElementById("countdown");
-        if (!nextTime) {
-          countdownEl.textContent = "Jadwal berikutnya tidak ditemukan.";
+        if (!nextPrayerTime || !nextPrayerName) {
+          countdownEl.textContent = "Memuat...";
           return;
         }
 
-        function pad(n) {
-          return n.toString().padStart(2, "0");
+        const now = new Date();
+        let diff = nextPrayerTime - now;
+
+        if (diff <= 0) {
+          highlightNextPrayer();
+          return;
         }
 
-        function refreshCountdown() {
-          const now = new Date();
-          const diff = nextTime - now;
+        const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+        diff %= 1000 * 60 * 60;
+        const minutes = String(Math.floor(diff / (1000 * 60))).padStart(2, "0");
+        diff %= 1000 * 60;
+        const seconds = String(Math.floor(diff / 1000)).padStart(2, "0");
 
-          if (diff <= 0) {
-            countdownEl.innerHTML = `<span>${prayerName}</span>Sedang berlangsung...`;
-            highlightNextPrayer();
-            return;
-          }
-
-          const h = Math.floor(diff / (1000 * 60 * 60));
-          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-          countdownEl.innerHTML = `<span>${prayerName} berikutnya</span>${pad(h)}:${pad(m)}:${pad(s)}`;
-        }
-
-        refreshCountdown();
-        clearInterval(window._countdownTimer);
-        window._countdownTimer = setInterval(refreshCountdown, 1000);
+        countdownEl.textContent = `Berikutnya ${nextPrayerName} ${hours}:${minutes}:${seconds}`;
       }
 
       function getLocation() {
@@ -254,13 +248,12 @@
           }
         });
 
-        // Tampilkan default Jakarta
         fetchJadwalSholat(-6.2, 106.8);
-
-        // Update jika user izinkan lokasi
         getLocation();
 
-        // Update highlight tiap menit
+        // Update setiap detik countdown
+        setInterval(updateCountdown, 1000);
+        // Update highlight setiap menit
         setInterval(highlightNextPrayer, 60000);
       };
 
@@ -268,7 +261,9 @@
       document.addEventListener("keydown", function (event) {
         if (event.ctrlKey && event.key === "u") event.preventDefault();
         if (
-          (event.ctrlKey && event.shiftKey && (event.key === "I" || event.key === "J")) ||
+          (event.ctrlKey &&
+            event.shiftKey &&
+            (event.key === "I" || event.key === "J")) ||
           (event.ctrlKey && event.key === "s") ||
           event.key === "F12"
         ) {
