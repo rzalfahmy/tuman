@@ -7,11 +7,17 @@
     <link rel="stylesheet" href="styles4.css" />
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <style>
-      /* Tambahkan gaya untuk highlight aktif */
       .jadwal-table tr.active {
         background-color: #ffe08a;
         font-weight: bold;
         transition: background 0.3s ease;
+      }
+      #countdown {
+        margin-top: 15px;
+        font-size: 1.1em;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
       }
     </style>
   </head>
@@ -32,6 +38,7 @@
             <!-- Jadwal sholat akan diisi -->
           </tbody>
         </table>
+        <div id="countdown">Memuat jadwal...</div>
       </main>
     </div>
 
@@ -125,7 +132,7 @@
         highlightNextPrayer();
       }
 
-      // Penanda sholat berikutnya
+      // Highlight + countdown
       function highlightNextPrayer() {
         const rows = document.querySelectorAll("#jadwalSholat tbody tr");
         const now = new Date();
@@ -150,7 +157,51 @@
         });
 
         rows.forEach((row) => row.classList.remove("active"));
-        if (nextRow) nextRow.classList.add("active");
+
+        if (!nextRow) {
+          // Semua sholat hari ini sudah lewat → highlight Subuh besok
+          nextRow = Array.from(rows).find((r) => r.textContent.includes("Subuh"));
+          if (nextRow) {
+            const [h, m] = nextRow.getAttribute("data-time").split(":").map(Number);
+            nextTime = new Date();
+            nextTime.setDate(nextTime.getDate() + 1);
+            nextTime.setHours(h, m, 0, 0);
+          }
+        }
+
+        if (nextRow) {
+          nextRow.classList.add("active");
+          updateCountdown(nextRow.cells[0].textContent, nextTime);
+        }
+      }
+
+      function updateCountdown(prayerName, nextTime) {
+        const countdownEl = document.getElementById("countdown");
+        if (!nextTime) {
+          countdownEl.textContent = "Jadwal berikutnya tidak ditemukan.";
+          return;
+        }
+
+        function refreshCountdown() {
+          const now = new Date();
+          const diff = nextTime - now;
+
+          if (diff <= 0) {
+            countdownEl.textContent = `${prayerName} sedang berlangsung...`;
+            highlightNextPrayer(); // otomatis update ke jadwal berikutnya
+            return;
+          }
+
+          const h = Math.floor(diff / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+          countdownEl.textContent = `${prayerName} berikutnya dalam ${h} jam ${m} menit ${s} detik`;
+        }
+
+        refreshCountdown();
+        clearInterval(window._countdownTimer);
+        window._countdownTimer = setInterval(refreshCountdown, 1000);
       }
 
       function getLocation() {
@@ -189,13 +240,13 @@
           }
         });
 
-        // 1. Tampilkan dulu jadwal default (Jakarta)
+        // Tampilkan default Jakarta
         fetchJadwalSholat(-6.2, 106.8);
 
-        // 2. Update jika user izinkan lokasi
+        // Update jika user izinkan lokasi
         getLocation();
 
-        // 3. Cek ulang setiap menit supaya highlight selalu update
+        // Update highlight tiap menit
         setInterval(highlightNextPrayer, 60000);
       };
 
