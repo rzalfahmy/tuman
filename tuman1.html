@@ -13,11 +13,18 @@
         transition: background 0.3s ease;
       }
       #countdown {
-        margin-top: 15px;
-        font-size: 1.1em;
+        margin: 15px 0;
+        font-size: 1.5em;
         text-align: center;
         font-weight: bold;
-        color: #333;
+        color: #2c3e50;
+      }
+      #countdown span {
+        display: block;
+        font-size: 0.8em;
+        font-weight: normal;
+        margin-bottom: 5px;
+        color: #666;
       }
     </style>
   </head>
@@ -27,6 +34,10 @@
         <h1>وقت الصلاة</h1>
       </header>
       <main class="dashboard-content">
+        <div id="countdown">
+          <span>Sholat berikutnya</span>
+          Memuat...
+        </div>
         <table id="jadwalSholat" class="jadwal-table">
           <thead>
             <tr>
@@ -38,7 +49,6 @@
             <!-- Jadwal sholat akan diisi -->
           </tbody>
         </table>
-        <div id="countdown">Memuat jadwal...</div>
       </main>
     </div>
 
@@ -182,13 +192,17 @@
           return;
         }
 
+        function pad(n) {
+          return n.toString().padStart(2, "0");
+        }
+
         function refreshCountdown() {
           const now = new Date();
           const diff = nextTime - now;
 
           if (diff <= 0) {
-            countdownEl.textContent = `${prayerName} sedang berlangsung...`;
-            highlightNextPrayer(); // otomatis update ke jadwal berikutnya
+            countdownEl.innerHTML = `<span>${prayerName}</span>Sedang berlangsung...`;
+            highlightNextPrayer();
             return;
           }
 
@@ -196,7 +210,7 @@
           const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-          countdownEl.textContent = `${prayerName} berikutnya dalam ${h} jam ${m} menit ${s} detik`;
+          countdownEl.innerHTML = `<span>${prayerName} berikutnya</span>${pad(h)}:${pad(m)}:${pad(s)}`;
         }
 
         refreshCountdown();
