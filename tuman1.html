@@ -6,31 +6,7 @@
     <title>وقت الصلاة</title>
     <link rel="stylesheet" href="styles4.css" />
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
-    <style>
-      /* Highlight row aktif */
-      .jadwal-table tr.active {
-        background-color: #ffe08a;
-        font-weight: bold;
-        transition: background 0.3s ease;
-      }
 
-      /* Countdown elegan tepat di atas tabel */
-      #countdown {
-        display: block;
-        text-align: center;
-        font-size: 1.2rem;
-        font-weight: 500;
-        margin: 0 0 12px 0;
-        color: #333;
-      }
-      #countdown.soon {
-        color: #e67e22; /* oranye */
-      }
-      #countdown.urgent {
-        color: #c0392b; /* merah */
-        font-weight: 600;
-      }
-    </style>
   </head>
   <body>
     <div class="dashboard-container">
@@ -40,6 +16,8 @@
       <main class="dashboard-content">
         <!-- Countdown di atas tabel -->
         <div id="countdown">Memuat...</div>
+
+        
 
         <table id="jadwalSholat" class="jadwal-table">
           <thead>
@@ -52,6 +30,7 @@
             <!-- Jadwal sholat akan diisi -->
           </tbody>
         </table>
+        
       </main>
     </div>
 
