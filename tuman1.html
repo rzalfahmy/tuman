@@ -14,13 +14,21 @@
         transition: background 0.3s ease;
       }
 
-      /* Countdown elegan */
+      /* Countdown elegan tepat di atas tabel */
       #countdown {
+        display: block;
         text-align: center;
         font-size: 1.2rem;
         font-weight: 500;
-        margin-bottom: 10px;
+        margin: 0 0 12px 0;
         color: #333;
+      }
+      #countdown.soon {
+        color: #e67e22; /* oranye */
+      }
+      #countdown.urgent {
+        color: #c0392b; /* merah */
+        font-weight: 600;
       }
     </style>
   </head>
@@ -52,7 +60,6 @@
       let nextPrayerName = "";
       let nextPrayerTime = null;
 
-      // Fungsi request dengan timeout
       function fetchWithTimeout(resource, options = {}) {
         const { timeout = 5000 } = options;
         return Promise.race([
@@ -63,7 +70,6 @@
         ]);
       }
 
-      // Cache
       function saveCache(data) {
         const today = new Date().toISOString().split("T")[0];
         localStorage.setItem(
@@ -139,7 +145,6 @@
         highlightNextPrayer();
       }
 
-      // Penanda sholat berikutnya + countdown
       function highlightNextPrayer() {
         const rows = document.querySelectorAll("#jadwalSholat tbody tr");
         const now = new Date();
@@ -187,7 +192,6 @@
         updateCountdown();
       }
 
-      // Update countdown tampilan
       function updateCountdown() {
         const countdownEl = document.getElementById("countdown");
         if (!nextPrayerTime || !nextPrayerName) {
@@ -209,7 +213,17 @@
         diff %= 1000 * 60;
         const seconds = String(Math.floor(diff / 1000)).padStart(2, "0");
 
+        // Update teks
         countdownEl.textContent = `Berikutnya ${nextPrayerName} ${hours}:${minutes}:${seconds}`;
+
+        // Update warna sesuai sisa waktu
+        countdownEl.className = "";
+        const totalMinutes = (nextPrayerTime - now) / 60000;
+        if (totalMinutes <= 10) {
+          countdownEl.classList.add("urgent");
+        } else if (totalMinutes <= 30) {
+          countdownEl.classList.add("soon");
+        }
       }
 
       function getLocation() {
@@ -219,9 +233,7 @@
       }
 
       function showPosition(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        fetchJadwalSholat(latitude, longitude, false);
+        fetchJadwalSholat(position.coords.latitude, position.coords.longitude, false);
       }
 
       function showError(error) {
@@ -232,28 +244,18 @@
         var body = document.body;
         var hammertime = new Hammer(body);
 
-        hammertime.on("swipeleft", function () {
-          window.location.href = "dashboard.html";
-        });
+        hammertime.on("swipeleft", () => (window.location.href = "dashboard.html"));
+        hammertime.on("swiperight", () => (window.location.href = "#"));
 
-        hammertime.on("swiperight", function () {
-          window.location.href = "#";
-        });
-
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "ArrowLeft") {
-            window.location.href = "#";
-          } else if (event.key === "ArrowRight") {
-            window.location.href = "dashboard.html";
-          }
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") window.location.href = "#";
+          else if (event.key === "ArrowRight") window.location.href = "dashboard.html";
         });
 
         fetchJadwalSholat(-6.2, 106.8);
         getLocation();
 
-        // Update setiap detik countdown
         setInterval(updateCountdown, 1000);
-        // Update highlight setiap menit
         setInterval(highlightNextPrayer, 60000);
       };
 
@@ -270,10 +272,7 @@
           event.preventDefault();
         }
       });
-
-      document.addEventListener("contextmenu", function (event) {
-        event.preventDefault();
-      });
+      document.addEventListener("contextmenu", (event) => event.preventDefault());
     </script>
   </body>
 </html>
