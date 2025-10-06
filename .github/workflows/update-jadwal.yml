@@ -1,9 +1,9 @@
-name: Update Jadwal Sholat Harian
+name: Update Jadwal Sholat Harian Jakarta
 
 on:
   schedule:
     - cron: '5 17 * * *'  # Jalan tiap 00:05 WIB (UTC+7)
-  workflow_dispatch:      # Bisa dijalankan manual juga dari GitHub Actions tab
+  workflow_dispatch:      # Bisa dijalankan manual juga
 
 jobs:
   update:
@@ -13,15 +13,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Ambil data jadwal dari Aladhan API (Kabupaten Bogor)
+      - name: Ambil data jadwal dari Aladhan API (Jakarta)
         run: |
-          curl -s "https://api.aladhan.com/v1/timingsByCity?city=Kabupaten%20Bogor&country=Indonesia&method=1" \
-          | jq '{updated_at: (now | todate), location: "Kabupaten Bogor", data: .data}' > jadwal.json
+          curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2" \
+          | jq '{updated_at: (now | todate), location: "Jakarta", data: .data}' > jadwal.json
 
       - name: Commit dan push perubahan
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add jadwal.json
-          git commit -m "Update jadwal sholat harian (Kabupaten Bogor)" || echo "Tidak ada perubahan untuk dikomit."
+          git commit -m "Update jadwal sholat harian (Jakarta)" || echo "Tidak ada perubahan untuk dikomit."
           git push
