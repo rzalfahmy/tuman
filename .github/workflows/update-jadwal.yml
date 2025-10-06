@@ -1,0 +1,26 @@
+name: Update Jadwal Sholat Harian
+
+on:
+  schedule:
+    - cron: '5 17 * * *'  # 00:05 WIB = 17:05 UTC
+  workflow_dispatch:      # bisa dijalankan manual juga
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ambil data jadwal dari Aladhan API
+        run: |
+          curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=1" \
+          | jq '{date: .data.date.readable, data: .data}' > jadwal.json
+
+      - name: Commit dan push perubahan
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add jadwal.json
+          git commit -m "Update jadwal sholat harian"
+          git push
