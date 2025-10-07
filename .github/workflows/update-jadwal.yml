@@ -3,10 +3,10 @@ name: Update Jadwal Sholat Harian Jakarta
 on:
   schedule:
     - cron: '5 17 * * *'  # Jalan tiap 00:05 WIB (UTC+7)
-  workflow_dispatch:      # Bisa dijalankan manual juga
+  workflow_dispatch:
 
 permissions:
-  contents: write   # ✅ izinkan push ke repo
+  contents: write  # ✅ penting untuk bisa commit & push
 
 jobs:
   update:
@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0   # ambil semua commit agar bisa rebase
 
       - name: Ambil data jadwal dari Aladhan API (Jakarta)
         run: |
@@ -25,16 +26,26 @@ jobs:
 
       - name: Konfigurasi Git
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit dan push perubahan
         run: |
+          BRANCH=$(git branch --show-current)
+          echo "Branch aktif: $BRANCH"
+
           git add jadwal.json
+
+          # Cek apakah ada perubahan
           if git diff --cached --quiet; then
-            echo "Tidak ada perubahan untuk dikomit."
+            echo "✅ Tidak ada perubahan untuk dikomit."
           else
+            echo "📝 Melakukan commit dan push..."
             git commit -m "Update jadwal sholat harian (Jakarta)"
-            git pull --rebase origin $(git branch --show-current) || true
-            git push origin HEAD || echo "Push gagal tapi workflow tetap lanjut"
+
+            # Tarik perubahan terbaru untuk hindari konflik
+            git pull --rebase origin $BRANCH || echo "⚠️ Tidak bisa rebase, lanjut push langsung"
+
+            # Push dengan force-with-lease (aman)
+            git push origin HEAD:$BRANCH --force-with-lease || echo "⚠️ Push gagal tapi workflow lanjut"
           fi
