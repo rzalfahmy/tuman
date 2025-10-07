@@ -24,8 +24,16 @@ jobs:
 
       - name: Ambil data jadwal dari Aladhan API (Jakarta)
         run: |
-          curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2" \
-          | jq '{updated_at: (now | todate), location: "Jakarta", data: .data}' > jadwal.json
+          echo "Mengambil data dari API..."
+          response=$(curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2")
+
+          # Periksa apakah API mengembalikan status OK
+          if echo "$response" | jq -e '.code == 200' >/dev/null; then
+            echo "$response" | jq '{updated_at: (now | todate), location: "Jakarta", data: .data}' > jadwal.json
+            echo "✅ Data jadwal berhasil diperbarui."
+          else
+            echo "❌ Gagal mengambil data dari API. File lama dipertahankan."
+          fi
 
       - name: Konfigurasi Git
         run: |
