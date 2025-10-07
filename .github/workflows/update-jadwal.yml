@@ -6,7 +6,7 @@ on:
   workflow_dispatch:      # Bisa dijalankan manual juga
 
 permissions:
-  contents: write
+  contents: write   # ✅ izinkan push ke repo
 
 jobs:
   update:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}   # 🔒 penting agar bisa push
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Ambil data jadwal dari Aladhan API (Jakarta)
         run: |
@@ -31,6 +31,10 @@ jobs:
       - name: Commit dan push perubahan
         run: |
           git add jadwal.json
-          git commit -m "Update jadwal sholat harian (Jakarta)" || echo "Tidak ada perubahan untuk dikomit."
-          git pull --rebase origin main || true     # 🧩 tambahkan rebase dulu
-          git push origin main || echo "Push gagal tapi workflow tetap lanjut"
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan untuk dikomit."
+          else
+            git commit -m "Update jadwal sholat harian (Jakarta)"
+            git pull --rebase origin $(git branch --show-current) || true
+            git push origin HEAD || echo "Push gagal tapi workflow tetap lanjut"
+          fi
