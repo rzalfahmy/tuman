@@ -5,6 +5,8 @@ on:
     - cron: '5 17 * * *'  # Jalan tiap 00:05 WIB (UTC+7)
   workflow_dispatch:      # Bisa dijalankan manual juga
 
+permissions: write-all
+
 jobs:
   update:
     runs-on: ubuntu-latest
