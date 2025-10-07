@@ -15,16 +15,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}   # 🔒 penting agar bisa push
 
       - name: Ambil data jadwal dari Aladhan API (Jakarta)
         run: |
           curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2" \
           | jq '{updated_at: (now | todate), location: "Jakarta", data: .data}' > jadwal.json
 
-      - name: Commit dan push perubahan
+      - name: Konfigurasi Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit dan push perubahan
+        run: |
           git add jadwal.json
           git commit -m "Update jadwal sholat harian (Jakarta)" || echo "Tidak ada perubahan untuk dikomit."
-          git push
+          git pull --rebase origin main || true     # 🧩 tambahkan rebase dulu
+          git push origin main || echo "Push gagal tapi workflow tetap lanjut"
