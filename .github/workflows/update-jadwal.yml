@@ -1,6 +1,8 @@
 name: Update Jadwal Sholat Harian Jakarta
 
 on:
+  schedule:
+    - cron: '5 17 * * *'  # Jalan tiap 00:05 WIB (UTC+7)
   workflow_dispatch:
 
 permissions:
@@ -17,28 +19,37 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Ambil data mentah dari API
-        run: |
-          echo "Mengambil data dari API..."
-          curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2" > api_raw.json
-          echo "✅ Data mentah berhasil disimpan ke api_raw.json"
-          echo "Menampilkan 20 baris pertama:"
-          head -n 20 api_raw.json
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Ubah format ke jadwal.json
+      - name: Ambil data jadwal dari Aladhan API (Jakarta)
         run: |
-          echo "Membuat file jadwal.json dengan format baru..."
-          jq '{updated_at: (now | todate), location: "Jakarta", data: .data}' api_raw.json > jadwal.json || cp api_raw.json jadwal.json
-          echo "✅ File jadwal.json berhasil dibuat"
-          echo "Menampilkan isi jadwal.json:"
-          head -n 20 jadwal.json
+          echo "📦 Mengambil data dari Aladhan API..."
+          response=$(curl -s "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=2")
 
-      - name: Commit dan push
+          if echo "$response" | jq -e '.code == 200' >/dev/null; then
+            echo "$response" | jq '{updated_at: (now | todate), location: "Jakarta", data: .data}' > jadwal.json
+            echo "✅ Data jadwal berhasil diperbarui."
+            cat jadwal.json
+          else
+            echo "❌ Gagal mengambil data dari API. File lama dipertahankan."
+          fi
+
+      - name: Konfigurasi Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add jadwal.json api_raw.json
-          git commit -m "Update jadwal sholat harian (Jakarta)" || echo "Tidak ada perubahan"
-          git pull --rebase origin $(git branch --show-current) || true
-          git push origin HEAD || echo "Push gagal tapi workflow lanjut"
+      - name: Commit dan push perubahan
+        run: |
+          BRANCH=$(git branch --show-current)
+          echo "Branch aktif: $BRANCH"
+
+          git add jadwal.json
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan untuk dikomit."
+          else
+            git commit -m "Update jadwal sholat harian (Jakarta)"
+            git pull --rebase origin $BRANCH || true
+            git push origin HEAD || echo "Push gagal tapi workflow tetap lanjut"
+          fi
